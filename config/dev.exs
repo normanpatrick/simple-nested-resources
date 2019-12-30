@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :simple_nested_resources, SimpleNestedResources.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "nbp",
+  password: "",
   database: "simple_nested_resources_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,

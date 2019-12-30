@@ -7,5 +7,8 @@ defmodule SimpleNestedResourcesWeb.Router do
 
   scope "/api", SimpleNestedResourcesWeb do
     pipe_through :api
+    resources "/users", UserController do
+      resources "/posts", PostController
+    end
   end
 end

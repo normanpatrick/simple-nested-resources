@@ -6,16 +6,17 @@ defmodule SimpleNestedResourcesWeb.PostController do
 
   action_fallback SimpleNestedResourcesWeb.FallbackController
 
-  def index(conn, _params) do
+  def index(conn, %{"user_id" => user_id}) do
     posts = PostContext.list_posts()
     render(conn, "index.json", posts: posts)
   end
 
-  def create(conn, %{"post" => post_params}) do
+  def create(conn, %{"post" => post_params, "user_id" => user_id}) do
     with {:ok, %Post{} = post} <- PostContext.create_post(post_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.post_path(conn, :show, post))
+      |> put_resp_header("location", Routes.user_post_path(
+            conn, :show, user_id, post))
       |> render("show.json", post: post)
     end
   end
@@ -33,7 +34,7 @@ defmodule SimpleNestedResourcesWeb.PostController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id, "user_id" => user_id}) do
     post = PostContext.get_post!(id)
 
     with {:ok, %Post{}} <- PostContext.delete_post(post) do

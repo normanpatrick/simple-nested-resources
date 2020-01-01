@@ -25,17 +25,19 @@ defmodule SimpleNestedResourcesWeb.PostControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
+  setup_all _context do
+    [user_id: 42]
+  end
+
   describe "index" do
-    test "lists all posts", %{conn: conn} do
-      user_id = 42
+    test "lists all posts", %{conn: conn, user_id: user_id} do
       conn = get(conn, Routes.user_post_path(conn, :index, user_id))
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create post" do
-    test "renders post when data is valid", %{conn: conn} do
-      user_id = 42
+    test "renders post when data is valid", %{conn: conn, user_id: user_id} do
       conn = post(conn, Routes.user_post_path(conn, :create, user_id),
         post: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -50,8 +52,7 @@ defmodule SimpleNestedResourcesWeb.PostControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      user_id = 42
+    test "renders errors when data is invalid", %{conn: conn, user_id: user_id} do
       conn = post(conn,
         Routes.user_post_path(conn, :create, user_id),
         post: @invalid_attrs)
@@ -62,8 +63,8 @@ defmodule SimpleNestedResourcesWeb.PostControllerTest do
   describe "update post" do
     setup [:create_post]
 
-    test "renders post when data is valid", %{conn: conn, post: %Post{id: id} = post} do
-      user_id = 42
+    test "renders post when data is valid",
+      %{conn: conn, user_id: user_id, post: %Post{id: id} = post} do
       conn = put(conn,
         Routes.user_post_path(conn, :update, user_id, post),
         post: @update_attrs)
@@ -78,8 +79,8 @@ defmodule SimpleNestedResourcesWeb.PostControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, post: post} do
-      user_id = 42
+    test "renders errors when data is invalid",
+      %{conn: conn, user_id: user_id, post: post} do
       conn = put(conn,
         Routes.user_post_path(conn, :update, user_id, post),
         post: @invalid_attrs)
@@ -91,8 +92,7 @@ defmodule SimpleNestedResourcesWeb.PostControllerTest do
     setup [:create_post]
 
     @tag skip: "wahoo - not ready yet"
-    test "deletes chosen post", %{conn: conn, post: post} do
-      user_id = 42
+    test "deletes chosen post", %{conn: conn, user_id: user_id, post: post} do
       post_id = "e3583f87-07e8-47b7-9f6c-31ee7ffd3627"
       conn = delete(conn, Routes.user_post_path(conn, :delete, user_id, post_id))
       assert response(conn, 204)
